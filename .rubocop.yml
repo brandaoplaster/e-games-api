@@ -1,0 +1,42 @@
+inherit_gem:
+  rubocop-shopify: rubocop.yml
+
+AllCops:
+  NewCops: enable
+  Exclude:
+    - bin/**/*
+    - config/**/*
+    - db/schema.rb
+    - db/migrate/*.rb
+    - node_modules/**/*
+    - tmp/**/*
+    - vendor/**/*
+
+Style/IndentationWidth:
+  Width: 2
+
+Style/StringLiterals:
+  Description: "Checks if uses of quotes match the configured preference."
+  StyleGuide: "#consistent-string-literals"
+  Enabled: true
+  EnforcedStyle: double_quotes
+  ConsistentQuotesInMultiline: true
+
+Metrics/LineLength:
+  Max: 100
+
+Bundler/OrderedGems:
+  Description: >-
+    Gems within groups in the Gemfile should be alphabetically sorted.
+  Enabled: true
+  ConsiderPunctuation: true
+
+Layout/IndentationWidth:
+  EnforcedStyle: indented
+
+Layout/LineLength:
+  Description: "Checks that line length does not exceed the configured limit."
+  Max: 100
+  AutoCorrect: true
+  Exclude:
+    - Gemfile

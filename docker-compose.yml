@@ -1,0 +1,40 @@
+version: '3.7'
+
+services:
+  egames:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: e_games_api
+    command: bash start.sh
+    depends_on:
+      - egames_db
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/app
+      - gem_cache:/usr/local/bundle
+    env_file:
+      - .env
+    networks:
+      - e_games_api_net
+
+  egames_db:
+    image: 'postgres:13'
+    container_name: e_games_api_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_PASSWORD=postgres
+    networks:
+      - e_games_api_net
+
+volumes:
+  postgres_data:
+  gem_cache:
+
+networks:
+  e_games_api_net:
