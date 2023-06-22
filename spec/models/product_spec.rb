@@ -1,8 +1,9 @@
 require "rails_helper"
 
 RSpec.describe Product, type: :model do
-  it { is_expected.to belong_to :productable } 
+  subject { build(:product) }
 
+  it { is_expected.to belong_to :productable }
   it { is_expected.to validate_presence_of(:name) }
   it { is_expected.to validate_uniqueness_of(:name).case_insensitive }
   it { is_expected.to validate_presence_of(:description) }
