@@ -7,4 +7,7 @@ class User < ActiveRecord::Base
     :rememberable,
     :validatable
   include DeviseTokenAuth::Concerns::User
+
+  validates :name, :profile, presence: true
+  enum profile: { admin: 1, client: 0 }
 end
