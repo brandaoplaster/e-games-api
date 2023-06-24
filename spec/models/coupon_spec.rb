@@ -11,4 +11,22 @@ RSpec.describe Coupon, type: :model do
   it { is_expected.to define_enum_for(:status).with_values({ active: 1, inactive: 0 }) }
   it { is_expected.to validate_numericality_of(:discount_value).is_greater_than(0) }
   it { is_expected.to validate_numericality_of(:discount_value).is_greater_than(0) }
+
+  it "can't have past due_date" do
+    subject.due_date = 1.day.ago
+    subject.valid?
+    expect(subject.errors.keys).to include(:due_date)
+  end
+
+  it "is invalid with current due_date" do
+    subject.due_date = Time.zone.now
+    subject.valid?
+    expect(subject.errors.keys).to include(:due_date)
+  end
+
+  it "is valid with future date" do
+    subject.due_date = Time.zone.now + 1.hour
+    subject.valid?
+    expect(subject.errors.keys).to_not include(:due_date)
+  end
 end
