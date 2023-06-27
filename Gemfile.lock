@@ -94,6 +94,9 @@ GEM
       activesupport (>= 5.0)
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
+    jbuilder (2.11.5)
+      actionview (>= 5.0.0)
+      activesupport (>= 5.0.0)
     json (2.6.3)
     listen (3.8.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
@@ -250,6 +253,7 @@ DEPENDENCIES
   devise_token_auth (~> 1.2, >= 1.2.2)
   factory_bot_rails
   faker
+  jbuilder (~> 2.11, >= 2.11.5)
   listen (~> 3.3)
   pg (~> 1.1)
   puma (~> 5.0)
