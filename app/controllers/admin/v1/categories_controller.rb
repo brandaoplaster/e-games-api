@@ -17,13 +17,12 @@ module Admin
 
       def category_params
         return {} unless params.has_key?(:category)
-
         params.require(:category).permit(:id, :name)
       end
 
       def save_category!
         @category.save!
-        render(:show)
+        render :show
       rescue
         render_error(fields: @category.errors.messages)
       end
