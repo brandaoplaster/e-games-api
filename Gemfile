@@ -32,8 +32,10 @@ group :development, :test do
   gem "simplecov_json_formatter", "~> 0.1.4", require: false
 
   gem "rubocop"
+  gem "rubocop-github", require: false
+  gem "rubocop-performance", require: false
+  gem "rubocop-rails", require: false
   gem "rubocop-rspec"
-  gem "rubocop-shopify", require: false
   gem "rufo"
 end
 
