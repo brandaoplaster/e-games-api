@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Admin v1 categories as :client", type: :request do
-  let(:user) { create(:user) }
+  let(:user) { create(:user, profile: :client) }
 
   context "GET /catgories" do
     let(:url) { "/admin/v1/categories" }
@@ -29,7 +29,7 @@ RSpec.describe "Admin v1 categories as :client", type: :request do
     include_examples "forbidden access"
   end
 
-  context "DELTE /categories" do
+  context "DELETE /categories/:id" do
     let!(:category) { create(:category) }
     let(:url) { "/admin/v1/categories/#{category.id}" }
 
