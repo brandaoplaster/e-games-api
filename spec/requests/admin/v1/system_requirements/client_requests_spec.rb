@@ -11,4 +11,12 @@ RSpec.describe "Admin V1 system requirements as :client", type: :request do
 
     include_examples "forbidden access"
   end
+
+  context "POST /system_requirements" do
+    let(:url) { "/admin/v1/system_requirements" }
+
+    before(:each) { post url, headers: auth_header(user) }
+
+    include_examples "forbidden access"
+  end
 end
