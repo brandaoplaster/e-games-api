@@ -3,6 +3,8 @@
 module Admin
   module V1
     class CouponsController < ApiController
+      before_action :laod_coupon, only: [:update]
+
       def index
         @coupons = Coupon.all
       end
@@ -13,7 +15,16 @@ module Admin
         save_coupon!
       end
 
+      def update
+        @coupon.attributes = coupon_params
+        save_coupon!
+      end
+
       private
+
+      def laod_coupon
+        @coupon = Coupon.find(params[:id])
+      end
 
       def coupon_params
         return {} unless params.has_key?(:coupon)
