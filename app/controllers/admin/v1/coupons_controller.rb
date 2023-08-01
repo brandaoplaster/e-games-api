@@ -3,7 +3,7 @@
 module Admin
   module V1
     class CouponsController < ApiController
-      before_action :laod_coupon, only: [:update]
+      before_action :laod_coupon, only: [:update, :destroy]
 
       def index
         @coupons = Coupon.all
@@ -18,6 +18,12 @@ module Admin
       def update
         @coupon.attributes = coupon_params
         save_coupon!
+      end
+
+      def destroy
+        @coupon.destroy!
+      rescue
+        render_error fields: @coupon.errors.messages
       end
 
       private
