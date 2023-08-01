@@ -1,4 +1,4 @@
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe "Admin::V1::Coupons", type: :request do
   let(:user) { create(:user) }
@@ -62,6 +62,58 @@ RSpec.describe "Admin::V1::Coupons", type: :request do
 
       it "returns unprocessable_entity status" do
         post url, headers: auth_header(user), params: coupon_invalid
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
+  end
+
+  context "PATCH /coupons/:id" do
+    let(:coupon) { create(:coupon) }
+    let(:url) { "/admin/v1/coupons/#{coupon.id}" }
+
+    context "with valid params" do
+      let(:new_name) { "New coupon" }
+      let(:coupon_params) { { coupon: { name: new_name } }.to_json }
+
+      it "update coupon" do
+        patch url, headers: auth_header(user), params: coupon_params
+        coupon.reload
+        expect(coupon.name).to eq new_name
+      end
+
+      it "returns updated coupon" do
+        patch url, headers: auth_header(user), params: coupon_params
+        coupon.reload
+        coupon_attributes = %i(id name code status discount_value max_use due_date)
+        expected_coupon = coupon.as_json(only: coupon_attributes)
+        expect(body_json["coupon"]).to eq expected_coupon
+      end
+
+      it "returns success status" do
+        patch url, headers: auth_header(user), params: coupon_params
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context "with invalid params" do
+      let(:coupon_invalid_params) do
+        { coupon: attributes_for(:coupon, name: nil) }.to_json
+      end
+
+      it "does not update coupon" do
+        old_name = coupon.name
+        patch url, headers: auth_header(user), params: coupon_invalid_params
+        coupon.reload
+        expect(coupon.name).to eq old_name
+      end
+
+      it "returns error message" do
+        patch url, headers: auth_header(user), params: coupon_invalid_params
+        expect(body_json["errors"]["fields"]).to have_key("name")
+      end
+
+      it "returns unprocessable_entity status" do
+        patch url, headers: auth_header(user), params: coupon_invalid_params
         expect(response).to have_http_status(:unprocessable_entity)
       end
     end

@@ -19,4 +19,13 @@ RSpec.describe "Admin v1 coupons as :client", type: :request do
 
     include_examples "forbidden access"
   end
+
+  context "PATCH /coupons/:id" do
+    let(:coupon) { create(:coupon) }
+    let(:url) { "/admin/v1/coupons/#{coupon.id}" }
+
+    before(:each) { patch url, headers: auth_header(user) }
+
+    include_examples "forbidden access"
+  end
 end

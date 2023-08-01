@@ -15,4 +15,13 @@ RSpec.describe "Admin v1 coupons without authentication", type: :request do
 
     include_examples "unauthenticated access"
   end
+
+  context "PATCH /coupons/:id" do
+    let(:coupon) { create(:coupon) }
+    let(:url) { "/admin/v1/coupons/#{coupon.id}" }
+
+    before(:each) { patch url }
+
+    include_examples "unauthenticated access"
+  end
 end
