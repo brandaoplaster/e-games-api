@@ -28,4 +28,13 @@ RSpec.describe "Admin v1 coupons as :client", type: :request do
 
     include_examples "forbidden access"
   end
+
+  context "DELETE /coupons/:id" do
+    let!(:coupon) { create(:coupon) }
+    let(:url) { "/admin/v1/coupons/#{coupon.id}" }
+
+    before(:each) { delete url, headers: auth_header(user) }
+
+    include_examples "forbidden access"
+  end
 end
