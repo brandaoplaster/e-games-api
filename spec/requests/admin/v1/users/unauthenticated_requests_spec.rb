@@ -24,4 +24,13 @@ RSpec.describe "Admin v1 users without authentication", type: :request do
 
     include_examples "unauthenticated access"
   end
+
+  context "DELETE /users/:id" do
+    let!(:user) { create(:user) }
+    let(:url) { "/admin/v1/users/#{user.id}" }
+
+    before(:each) { delete url }
+    
+    include_examples "unauthenticated access"
+  end
 end
