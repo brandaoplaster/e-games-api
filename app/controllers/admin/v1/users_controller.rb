@@ -3,6 +3,8 @@
 module Admin
   module V1
     class UsersController < ApiController
+      before_action :load_user, only: [:update]
+
       def index
         @users = User.where.not(id: @current_user.id)
       end
@@ -13,13 +15,22 @@ module Admin
         save_user!
       end
 
+      def update
+        @user.attributes = user_params
+        save_user!
+      end
+
       private
+
+      def load_user
+        @user = User.find(params[:id])
+      end
+
 
       def user_params
         return {} unless params.has_key?(:user)
-        params.require(:user).permit(:id, :name, :email, :password,
-                                     :password_confirmation,
-                                     :profile)
+        params.require(:user).permit(:id, :name, :email, :password, :password_confirmation,
+:profile)
       end
 
       def save_user!
