@@ -3,7 +3,7 @@
 module Admin
   module V1
     class UsersController < ApiController
-      before_action :load_user, only: [:update, :destroy]
+      before_action :load_user, only: [:update, :show, :destroy]
 
       def index
         @users = User.where.not(id: @current_user.id)
@@ -19,6 +19,8 @@ module Admin
         @user.attributes = user_params
         save_user!
       end
+
+      def show; end
 
       def destroy
         @user.destroy!
