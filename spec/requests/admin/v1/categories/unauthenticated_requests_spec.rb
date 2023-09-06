@@ -25,6 +25,15 @@ RSpec.describe "Admin v1 categories without authentication", type: :request do
     include_examples "unauthenticated access"
   end
 
+  context "GET /categories/:id" do
+    let!(:category) { create(:category) }
+    let(:url) { "/admin/v1/categories/#{category.id}" }
+
+    before(:each) { get url }
+
+    include_examples "unauthenticated access"
+  end
+
   context "DELTE /categories" do
     let!(:category) { create(:category) }
     let(:url) { "/admin/v1/categories/#{category.id}" }
