@@ -15,7 +15,10 @@ AllCops:
     - vendor/**/*
     - spec/**/*
 
-Style/IndentationWidth:
+Layout/EndAlignment:
+  AutoCorrect: true
+
+Layout/IndentationWidth:
   Width: 2
 
 Style/StringLiterals:
@@ -25,21 +28,15 @@ Style/StringLiterals:
   EnforcedStyle: double_quotes
   ConsistentQuotesInMultiline: true
 
-Metrics/LineLength:
-  Max: 100
-
-Bundler/OrderedGems:
-  Description: >-
-    Gems within groups in the Gemfile should be alphabetically sorted.
-  Enabled: true
-  ConsiderPunctuation: true
-
-Layout/IndentationWidth:
-  EnforcedStyle: indented
-
 Layout/LineLength:
   Description: "Checks that line length does not exceed the configured limit."
   Max: 100
   AutoCorrect: true
   Exclude:
     - Gemfile
+
+Bundler/OrderedGems:
+  Description: >-
+    Gems within groups in the Gemfile should be alphabetically sorted.
+  Enabled: true
+  ConsiderPunctuation: true
