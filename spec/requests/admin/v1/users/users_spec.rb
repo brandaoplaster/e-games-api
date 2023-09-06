@@ -125,6 +125,22 @@ RSpec.describe "Admin::V1::Users", type: :request do
     end
   end
 
+  context "GET /users/:id" do
+    let!(:user) { create(:user) }
+    let(:url) { "/admin/v1/users/#{user.id}" }
+
+    it "returns requested user" do
+      get url, headers: auth_header(login_user)
+      expected_user = user.as_json(only: %i(id name email profile))
+      expect(body_json["user"]).to eq expected_user
+    end
+
+    it "returns success status" do
+      get url, headers: auth_header(login_user)
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
   context "DELETE /users/:id" do
     let!(:user) { create(:user) }
     let(:url) { "/admin/v1/users/#{user.id}" }
