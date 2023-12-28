@@ -35,6 +35,44 @@ RSpec.describe Admin::ProductSavingService, type: :model do
           expect(product.categories.ids).to contain_exactly *new_categories.map(&:id)
         end
       end
+
+      context "with invalid :product_params" do
+        let(:product_params) { attributes_for(:product, name: "") }
+
+        it "raise NotSavedProductError" do
+          expect {
+            service = described_class.new(product_params, product)
+            service.call
+          }.to raise_error(Admin::ProductSavingService::NotSavedProductError)
+        end
+
+        it "sets validation :errors" do
+          service = error_proof_call(product_params, product)
+          expect(service.errors).to have_key(:name)
+        end
+
+        it "doest update :product" do
+          expect {
+            error_proof_call(product_params, product)
+            product.reload
+          }.to_not change(product, :name)
+        end
+
+        it "keeps old categories" do
+          service = error_proof_call(product_params, product)
+          product.reload
+          expect(product.categories.ids).to contain_exactly *old_categories.map(&:id)
+        end
+      end
     end
   end
+end
+
+def error_proof_call(*params)
+  service = described_class.new(*params)
+  begin
+    service.call
+  rescue => e
+  end
+  return service
 end
