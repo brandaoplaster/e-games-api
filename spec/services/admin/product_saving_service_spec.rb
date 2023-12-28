@@ -14,11 +14,25 @@ RSpec.describe Admin::ProductSavingService, type: :model do
             productable_attributes: { developer: "New company" } }
         }
 
-        it "update product" do
+        it "updates product" do
           service = described_class.new(params, product)
           service.call
           product.reload
           expect(product.name).to eq "New product"
+        end
+
+        it "updates :productable" do
+          service = described_class.new(params, product)
+          service.call
+          game.reload
+          expect(game.developer).to eq "New company"
+        end
+
+        it "updates to new categories" do
+          service = described_class.new(params, product)
+          service.call
+          product.reload
+          expect(product.categories.ids).to contain_exactly *new_categories.map(&:id)
         end
       end
     end
