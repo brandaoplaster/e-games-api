@@ -93,6 +93,20 @@ RSpec.describe Admin::ProductSavingService, type: :model do
           expect(product.categories.ids).to contain_exactly *old_categories.map(&:id)
         end
       end
+
+      context "without loaded product" do
+        context "with valid params" do
+        end
+
+        context "with invalid :product params" do
+        end
+
+        context "with invalid :productable params" do
+        end
+
+        context "without :productable params" do
+        end
+      end
     end
   end
 end
