@@ -64,6 +64,35 @@ RSpec.describe Admin::ProductSavingService, type: :model do
           expect(product.categories.ids).to contain_exactly *old_categories.map(&:id)
         end
       end
+
+      context "with invalid :productable_params" do
+        let(:game_params) { { productable_attributes: attributes_for(:game, developer: "") } }
+
+        it "raises NotSavedProductError" do
+          expect {
+            service = described_class.new(game_params, product)
+            service.call
+          }.to raise_error(Admin::ProductSavingService::NotSavedProductError)
+        end
+
+        it "sets validation :error" do
+          service = error_proof_call(game_params, product)
+          expect(service.errors).to have_key(:developer)
+        end
+
+        it "doesnt update :productable" do
+          expect {
+            error_proof_call(game_params, product)
+            product.productable.reload
+          }.to_not change(product.productable, :developer)
+        end
+
+        it "keeps old categories" do
+          service = error_proof_call(game_params, product)
+          product.reload
+          expect(product.categories.ids).to contain_exactly *old_categories.map(&:id)
+        end
+      end
     end
   end
 end
