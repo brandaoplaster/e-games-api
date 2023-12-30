@@ -206,6 +206,37 @@ RSpec.describe Admin::ProductSavingService, type: :model do
         end
 
         context "without :productable params" do
+          let(:product_params) { attributes_for(:product) }
+
+          it "raises NotSavedProductError" do
+            expect {
+              service = described_class.new(product_params)
+              service.call
+            }.to raise_error(Admin::ProductSavingService::NotSavedProductError)
+          end
+
+          it "does not create a new product" do
+            expect {
+              error_proof_call(product_params)
+            }.to_not change(Product, :count)
+          end
+
+          it "sets validation :errors" do
+            service = error_proof_call(product_params)
+            expect(service.errors).to have_key(:productable)
+          end
+
+          it "does not create a :productable" do
+            expect {
+              error_proof_call(product_params)
+            }.to_not change(Game, :count)
+          end
+
+          it "doen not create category association" do
+            expect {
+              error_proof_call(product_params)
+            }.to_not change(ProductCategory, :count)
+          end
         end
       end
     end
