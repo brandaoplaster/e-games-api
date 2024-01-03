@@ -13,6 +13,8 @@ module Admin
         render_error(fields: @saving_service.errors)
       end
 
+      def show; end
+
       private
 
       def product_params
