@@ -11,4 +11,12 @@ RSpec.describe "Admin v1 Product as :client", type: :request do
 
     include_examples "forbidden access"
   end
+
+  context "POST /products" do
+    let(:url) { "/admin/v1/products" }
+
+    before(:each) { post url, headers: auth_header(user) }
+
+    include_examples "forbidden access"
+  end
 end

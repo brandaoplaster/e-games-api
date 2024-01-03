@@ -21,6 +21,9 @@ Layout/EndAlignment:
 Layout/IndentationWidth:
   Width: 2
 
+Style/HashSyntax:
+  Enabled: false
+
 Style/StringLiterals:
   Description: "Checks if uses of quotes match the configured preference."
   StyleGuide: "#consistent-string-literals"

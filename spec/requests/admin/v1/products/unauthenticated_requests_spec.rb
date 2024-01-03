@@ -9,4 +9,12 @@ RSpec.describe "Admin v1 Product without authentication", type: :request do
 
     include_examples "unauthenticated access"
   end
+
+  context "POST /products" do
+    let(:url) { "/admin/v1/products" }
+
+    before(:each) { post url }
+
+    include_examples "unauthenticated access"
+  end
 end

@@ -28,6 +28,154 @@ RSpec.describe "Admin::V1::Products", type: :request do
       end
     end
   end
+
+  context "POST /products" do
+    let(:url) { "/admin/v1/products" }
+    let(:categories) { create_list(:category, 2) }
+    let(:system_requirement) { create(:system_requirement) }
+    let(:post_header) { auth_header(user, merge_with: { "Content-Type" => "multipart/form-data" }) }
+
+    context "with valid params" do
+      let(:game_params) { attributes_for(:game, system_requirement_id: system_requirement.id) }
+      let(:product_params) do
+        { product: attributes_for(:product).merge(category_ids: categories.map(&:id))
+          .merge(productable: "game").merge(game_params) }
+      end
+
+      it "adds a new Product" do
+        expect do
+          post url, headers: post_header, params: product_params
+        end.to change(Product, :count).by(1)
+      end
+
+      it "adds a new productable" do
+        expect do
+          post url, headers: post_header, params: product_params
+        end.to change(Game, :count).by(1)
+      end
+
+      it "associates categories to Product" do
+        post url, headers: post_header, params: product_params
+        expect(Product.last.categories.ids).to contain_exactly *categories.map(&:id)
+      end
+
+      it "returns last added Product" do
+        post url, headers: post_header, params: product_params
+        expected_product = build_game_product_json(Product.last)
+        expect(body_json["product"]).to eq expected_product
+      end
+
+      it "returns success status" do
+        post url, headers: post_header, params: product_params
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context "with invalid Product params" do
+      let(:game_params) { attributes_for(:game, system_requirement_id: system_requirement.id) }
+      let(:product_invalid_params) do
+        { product: attributes_for(:product, name: nil).merge(category_ids: categories.map(&:id))
+          .merge(productable: "game").merge(game_params) }
+      end
+
+      it "does not add a new Product" do
+        expect do
+          post url, headers: post_header, params: product_invalid_params
+        end.to_not change(Product, :count)
+      end
+
+      it "does not add a new productable" do
+        expect do
+          post url, headers: post_header, params: product_invalid_params
+        end.to_not change(Game, :count)
+      end
+
+      it "does not create ProductCategory" do
+        expect do
+          post url, headers: post_header, params: product_invalid_params
+        end.to_not change(ProductCategory, :count)
+      end
+
+      it "returns error message" do
+        post url, headers: post_header, params: product_invalid_params
+        expect(body_json["errors"]["fields"]).to have_key("name")
+      end
+
+      it "returns unprocessable_entity status" do
+        post url, headers: post_header, params: product_invalid_params
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
+
+    context "with invalid productable params" do
+      let(:game_params) { attributes_for(:game, developer: "", system_requirement_id: system_requirement.id) }
+      let(:invalid_productable_params) do
+        { product: attributes_for(:product).merge(productable: "game").merge(game_params) }
+      end
+
+      it "does not add a new Product" do
+        expect do
+          post url, headers: post_header, params: invalid_productable_params
+        end.to_not change(Product, :count)
+      end
+
+      it "does not add a new productable" do
+        expect do
+          post url, headers: post_header, params: invalid_productable_params
+        end.to_not change(Game, :count)
+      end
+
+      it "does not create ProductCategory" do
+        expect do
+          post url, headers: post_header, params: invalid_productable_params
+        end.to_not change(ProductCategory, :count)
+      end
+
+      it "returns error message" do
+        post url, headers: post_header, params: invalid_productable_params
+        expect(body_json["errors"]["fields"]).to have_key("developer")
+      end
+
+      it "returns unprocessable_entity status" do
+        post url, headers: post_header, params: invalid_productable_params
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
+
+    context "without productable params" do
+      let(:product_without_productable_params) do
+        { product: attributes_for(:product).merge(categories_ids: categories.map(&:id)) }
+      end
+
+      it "does not add a new Product" do
+        expect do
+          post url, headers: post_header, params: product_without_productable_params
+        end.to_not change(Product, :count)
+      end
+
+      it "does not add a new productable" do
+        expect do
+          post url, headers: post_header, params: product_without_productable_params
+        end.to_not change(Game, :count)
+      end
+
+      it "does not create ProductCategory" do
+        expect do
+          post url, headers: post_header, params: product_without_productable_params
+        end.to_not change(ProductCategory, :count)
+      end
+
+      it "returns error message" do
+        post url, headers: post_header, params: product_without_productable_params
+        expect(body_json["errors"]["fields"]).to have_key("productable")
+      end
+
+      it "returns unprocessable_entity status" do
+        post url, headers: post_header, params: product_without_productable_params
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
+  end
 end
 
 def build_game_product_json(product)
