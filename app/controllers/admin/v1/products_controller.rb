@@ -3,6 +3,8 @@
 module Admin
   module V1
     class ProductsController < ApiController
+      before_action :load_product, only: %i(show update)
+
       def index
         @products = load_products
       end
@@ -15,7 +17,17 @@ module Admin
 
       def show; end
 
+      def update
+        run_service
+      rescue Admin::ProductSavingService::NotSavedProductError
+        render_error(fields: @saving_service.errors)
+      end
+
       private
+
+      def load_product
+        @product = Product.find(params[:id])
+      end
 
       def product_params
         return {} unless params.has_key?(:product)
