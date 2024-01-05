@@ -28,4 +28,13 @@ RSpec.describe "Admin v1 Product as :client", type: :request do
 
     include_examples "forbidden access"
   end
+
+  context "PATCH /products/:id" do
+    let(:product) { create(:product) }
+    let(:url) { "/admin/v1/products/#{product.id}" }
+
+    before(:each) { patch url, headers: auth_header(user) }
+
+    include_examples "forbidden access"
+  end
 end
