@@ -15,19 +15,19 @@ RSpec.describe Coupon, type: :model do
   it "can't have past due_date" do
     subject.due_date = 1.day.ago
     subject.valid?
-    expect(subject.errors.keys).to include(:due_date)
+    expect(subject.errors.attribute_names).to include(:due_date)
   end
 
   it "is invalid with current due_date" do
     subject.due_date = Time.zone.now
     subject.valid?
-    expect(subject.errors.keys).to include(:due_date)
+    expect(subject.errors.attribute_names).to include(:due_date)
   end
 
   it "is valid with future date" do
     subject.due_date = Time.zone.now + 1.hour
     subject.valid?
-    expect(subject.errors.keys).to_not include(:due_date)
+    expect(subject.errors.attribute_names).to_not include(:due_date)
   end
 
   it_behaves_like "name searchable concern", :coupon
