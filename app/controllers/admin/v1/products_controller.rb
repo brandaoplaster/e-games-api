@@ -3,7 +3,7 @@
 module Admin
   module V1
     class ProductsController < ApiController
-      before_action :load_product, only: %i(show update)
+      before_action :load_product, only: %i(show update destroy)
 
       def index
         @products = load_products
@@ -21,6 +21,13 @@ module Admin
         run_service
       rescue Admin::ProductSavingService::NotSavedProductError
         render_error(fields: @saving_service.errors)
+      end
+
+      def destroy
+        @product.productable.destroy!
+        @product.destroy!
+      rescue ActiveRecord::RecordNotDestroyed
+        render_error(fields: @product.errors.messages.merge(@product.productale.errors.messages))
       end
 
       private
