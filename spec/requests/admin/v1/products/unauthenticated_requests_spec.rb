@@ -35,4 +35,13 @@ RSpec.describe "Admin v1 Product without authentication", type: :request do
 
     include_examples "unauthenticated access"
   end
+
+  context "DELETE /products/:id" do
+    let!(:product) { create(:product) }
+    let(:url) { "/admin/v1/products/#{product.id}" }
+
+    before(:each) { delete url }
+
+    include_examples "unauthenticated access"
+  end
 end
