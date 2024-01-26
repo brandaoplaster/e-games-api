@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class License < ApplicationRecord
+  include Paginatable
   belongs_to :game
 
   validates :key, :status, :platform, presence: true
