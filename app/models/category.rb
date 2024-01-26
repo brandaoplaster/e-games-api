@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Category < ApplicationRecord
-  include NameSearchable
+  include LikeSearchable
   include Paginatable
 
   has_many :product_categories, dependent: :destroy
