@@ -2,6 +2,7 @@
 
 class User < ActiveRecord::Base
   include Paginatable
+  include LikeSearchable
 
   devise :database_authenticatable,
     :registerable,

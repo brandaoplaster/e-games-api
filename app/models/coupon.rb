@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Coupon < ApplicationRecord
-  include NameSearchable
+  include LikeSearchable
   include Paginatable
 
   validates :name, :due_date, :status, presence: true

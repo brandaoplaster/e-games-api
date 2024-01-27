@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class Game < ApplicationRecord
+  include LikeSearchable
+  include Paginatable
+
   belongs_to :system_requirement
   has_one :product, as: :productable
 
