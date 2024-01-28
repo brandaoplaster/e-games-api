@@ -3,10 +3,10 @@
 module Admin
   module V1
     class SystemRequirementsController < ApiController
-      before_action :laod_system_requirement, only: [:update, :destroy]
+      before_action :load_system_requirement, only: %i(show update destroy)
 
       def index
-        @loading_service = ModelLoadingService.new(SystemRequirement.all, searchable_params)
+        @loading_service = Admin::ModelLoadingService.new(SystemRequirement.all, searchable_params)
         @loading_service.call
         @system_requirements = @loading_service.records
       end
@@ -16,6 +16,8 @@ module Admin
         @system_requirement.attributes = system_requirement_params
         save_system_requirement!
       end
+
+      def show; end
 
       def update
         @system_requirement.attributes = system_requirement_params
@@ -31,7 +33,7 @@ module Admin
       private
 
       def searchable_params
-        params.permit({ search: :name}, { order: {}}, :page, :lenght)
+        params.permit({ search: :name}, { order: {}}, :page, :length)
       end
 
       def system_requirement_params
@@ -40,7 +42,7 @@ module Admin
                                                    :processor, :memory, :video_board)
       end
 
-      def laod_system_requirement
+      def load_system_requirement
         @system_requirement = SystemRequirement.find(params[:id])
       end
 
