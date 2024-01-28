@@ -3,7 +3,7 @@
 module Admin
   module V1
     class CouponsController < ApiController
-      before_action :laod_coupon, only: [:update, :destroy]
+      before_action :load_coupon, only: %i(show update destroy)
 
       def index
         @loading_service = ModelLoadingService.new(Coupon.all, searchable_params)
@@ -16,6 +16,8 @@ module Admin
         @coupon.attributes = coupon_params
         save_coupon!
       end
+
+      def show; end
 
       def update
         @coupon.attributes = coupon_params
@@ -31,10 +33,10 @@ module Admin
       private
 
       def searchable_params
-        params.permit({ search: :name}, { order: {}}, :page, :lenght)
+        params.permit({ search: :name }, { order: {} }, :page, :length)
       end
 
-      def laod_coupon
+      def load_coupon
         @coupon = Coupon.find(params[:id])
       end
 
