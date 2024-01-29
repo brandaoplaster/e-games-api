@@ -12,6 +12,10 @@ module RequestAPI
     header = auth.merge({ "Content-type" => "Application/json", "Accept" => "Application/json" })
     header.merge(merge_with)
   end
+
+  def unauthenticated_header(merge_with: {})
+    { "Content-type" => "Application/json", "Accept" => "Application/json" }.merge(merge_with)
+  end
 end
 
 RSpec.configure do |config|
