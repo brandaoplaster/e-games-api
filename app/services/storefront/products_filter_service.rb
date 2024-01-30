@@ -13,9 +13,9 @@ module Storefront
     def call
       set_pagination_values
       get_available_products
-      searched = filter_records.select("products.*, games.mode, games.developer, games.release_date").distinct
-      @records = searched.order(@params[:order]..to_h).paginate(@params[:page]), (@params[:length])
-      set_pagination_attributes(searched.size)
+      searched = filter_records.distinct("products.*, game.*")
+      @records = searched.order(@params[:order].to_h).paginate(@params[:page], @params[:length])
+      set_pagination_attributes(searched.count)
     end
 
     private
@@ -23,8 +23,8 @@ module Storefront
     def set_pagination_values
       @params[:page] = @params[:page].to_i
       @params[:length] = @params[:length].to_i
-      @pagination[:page] = Product::DEFAULT_PAGE if @params[:page] <= 0
-      @pagination[:length] = Product::MAX_PER_PAGE if @params[:length] <= 0
+      @params[:page] = Product::DEFAULT_PAGE if @params[:page] <= 0
+      @params[:length] = Product::MAX_PER_PAGE if @params[:length] <= 0
     end
 
     def set_pagination_attributes(total_filtered)
@@ -34,9 +34,9 @@ module Storefront
 
     def get_available_products
       @records = @records.joins("JOIN games ON productable_type = 'Game' AND productable_id = games.id")
-        .left_joins(:categories)
-        .includes(productable: [:game], categories: {})
-        .where(status: :available)
+                         .left_joins(:categories)
+                         .includes(productable: [:game], categories: {})
+                         .where(status: :available)
     end
 
     def filter_records
@@ -59,15 +59,15 @@ module Storefront
     end
 
     def filter_by_price
-      min_price = @params.dig[:price, :min]
-      max_price = @params.dig[:price, :max]
+      min_price = @params.dig(:price, :min)
+      max_price = @params.dig(:price, :max)
       return @records.all if min_price.blank? && max_price.blank?
       @records.where(price: min_price..max_price)
     end
 
     def filter_by_release_date
-      min_date = @params.dig[:release_date, :min].beginning_of_day rescue nil
-      max_date = @params.dig[:release_date, :max].end_of_day rescue nil
+      min_date = Time.parse(@params.dig(:release_date, :min)).beginning_of_day rescue nil
+      max_date = Time.parse(@params.dig(:release_date, :max)).end_of_day rescue nil
       return @records.all if min_date.blank? && max_date.blank?
       Game.where(release_date: min_date..max_date)
     end
