@@ -7,6 +7,10 @@ module Storefront::V1
       @products.call
     end
 
+    def show
+      @product = Product.find(params[:id])
+    end
+
     private
 
     def search_params
