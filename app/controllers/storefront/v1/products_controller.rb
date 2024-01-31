@@ -3,7 +3,8 @@
 module Storefront::V1
   class ProductsController < ApplicationController
     def index
-      @products = Storefront::ProductsFilterService.new(search_params).call
+      @products = Storefront::ProductsFilterService.new(search_params)
+      @products.call
     end
 
     private
