@@ -15,7 +15,6 @@ module Storefront
       get_available_products
       searched = filter_records.select("products.*, games.mode, games.developer, games.release_date").distinct
       @records = searched.order(@params[:order].to_h).paginate(@params[:page], @params[:length])
-      puts searched.to_sql
       set_pagination_attributes(searched.size)
     end
 
