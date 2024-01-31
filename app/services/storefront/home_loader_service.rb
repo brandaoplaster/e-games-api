@@ -9,13 +9,13 @@ module Storefront
 
     def initialize
       @featured = []
-      @recently_releases = []
+      @last_releases = []
       @cheapest = []
     end
 
     def call
       games = Product.joins("JOIN games ON productable_type = 'Game' AND productable_id = games.id")
-                     .includes(productable: [:game]).where(status: :available)
+                     .where(status: :available)
       @featured = load_featured_games(games)
       @last_releases = load_last_released_games(games)
       @cheapest = load_cheapest_games(games)
