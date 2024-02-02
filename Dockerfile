@@ -1,15 +1,31 @@
-FROM ruby:3.1.4
+FROM ruby:3.1.4-alpine
 
-RUN apt-get update && apt-get install -qq -y --no-install-recommends \
-  build-essential libpq-dev imagemagick git-all nano
+ENV TZ=America/Sao_Paulo
+
+ARG USER_ID=1000
+ARG GROUP_ID=1000
 
 ENV INSTALL_PATH /app
+
+RUN apk --no-cache add \
+  build-base \
+  postgresql-dev \
+  imagemagick \
+  tzdata \
+  curl \
+  gnupg \
+  nodejs \
+  git \ 
+  yarn && \
+  rm -rf /var/cache/apk/*
+
 RUN mkdir -p $INSTALL_PATH
 
+RUN addgroup -g $GROUP_ID appuser && \
+  adduser -D -u $USER_ID -G appuser -h $INSTALL_PATH appuser
+
+USER appuser
+
 WORKDIR $INSTALL_PATH
-
-ENV BUNDLE_PATH /usr/local/bundle
-
-COPY Gemfile Gemfile.lock ./
 
 COPY . .
