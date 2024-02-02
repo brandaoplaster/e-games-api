@@ -1,0 +1,8 @@
+en:
+  activerecord:
+    errors:
+      models:
+        wish_item:
+          attributes:
+            product_id:
+              taken: "is already in the user list"
