@@ -30,6 +30,28 @@ RSpec.describe Coupon, type: :model do
     expect(subject.errors.attribute_names).to_not include(:due_date)
   end
 
+  context "on validate_use!" do
+    subject { build(:coupon) }
+
+    it "raise InvalidUse when its overdue" do
+      subject.due_date = 2.days.ago
+      expect do
+        subject.validate_use!
+      end.to raise_error(Coupon::InvalidUse)
+    end
+
+    it "raise InvalidUse when its inactive" do
+      subject.status = :inactive
+      expect do
+        subject.validate_use!
+      end.to raise_error(Coupon::InvalidUse)
+    end
+
+    it "returns true when its on date and active" do
+      expect(subject.validate_use!).to eq true
+    end
+  end
+
   it_has_behavior_of "like searchable concern", :coupon, :name
   it_behaves_like "paginatable concern", :coupon
 end
