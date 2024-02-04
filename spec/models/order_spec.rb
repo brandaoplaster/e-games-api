@@ -19,6 +19,7 @@ RSpec.describe Order, type: :model do
 
   it { is_expected.to belong_to :user }
   it { is_expected.to belong_to(:coupon).optional }
+  it { is_expected.to have_many(:line_items).dependent(:destroy) }
 
   it "#due_date must be 7 days ahead :created_at" do
     subject = create(:order)
