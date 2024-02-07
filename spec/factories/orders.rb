@@ -6,7 +6,9 @@ FactoryBot.define do
     payment_type { :credit_card }
     installments { 5 }
     user
-
+    card_hash { Faker::Lorem.characters(number: 20) }
+    address { build(:address) }
+    document { "03.000.050/0001-67" }
     trait :with_items do
       after :build do |order|
         items = create_list(:line_items, 5, order: order)
