@@ -4,7 +4,7 @@ module Storefront::V1
   class CheckoutsController < ApiController
     def create
       run_service
-    rescue Storefront::CheckoutProcessorService::InvalidCheckoutError
+    rescue Storefront::CheckoutProcessorService::InvalidParamsError
       render_error(fields: @service.errors)
     end
 
