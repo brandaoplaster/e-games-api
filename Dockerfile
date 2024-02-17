@@ -1,4 +1,4 @@
-FROM ruby:3.1.4-alpine
+FROM ruby:3.1.4-slim
 
 ENV TZ=America/Sao_Paulo
 
@@ -7,25 +7,26 @@ ARG GROUP_ID=1000
 
 ENV INSTALL_PATH /app
 
-RUN apk --no-cache add \
-  build-base \
-  postgresql-dev \
+RUN apt-get update && \
+  apt-get install -y --no-install-recommends \
+  build-essential \
+  libpq-dev \
   imagemagick \
   tzdata \
   curl \
   gnupg \
-  nodejs \
-  git \ 
-  yarn && \
-  rm -rf /var/cache/apk/*
+  git && \
+  rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p $INSTALL_PATH
-
-RUN addgroup -g $GROUP_ID appuser && \
-  adduser -D -u $USER_ID -G appuser -h $INSTALL_PATH appuser
+RUN groupadd -g $GROUP_ID appuser && \
+  useradd -r -u $USER_ID -g $GROUP_ID -m -d $INSTALL_PATH -s /sbin/nologin appuser
 
 USER appuser
 
+RUN mkdir -p $INSTALL_PATH
+
 WORKDIR $INSTALL_PATH
+
+COPY Gemfile Gemfile.lock ./
 
 COPY . .
