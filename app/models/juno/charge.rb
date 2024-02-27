@@ -2,6 +2,7 @@
 
 class Juno::Charge < ApplicationRecord
   belongs_to :order
+  has_many :credit_card_payments, class_name: "Juno::CreditCardPayment"
 
   validates :key, :code, :status, presence: true
   validates :number, presence: true, uniqueness: { scope: :order_id },
