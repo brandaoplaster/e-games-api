@@ -19,9 +19,9 @@ gem "bootsnap", ">= 1.4.4", require: false
 gem "cpf_cnpj", "~> 0.5.0"
 gem "rack-cors"
 
-
 gem "devise_token_auth", "~> 1.2", ">= 1.2.2"
 gem "jbuilder", "~> 2.11", ">= 2.11.5"
+gem "httparty", "~> 0.18.1"
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
