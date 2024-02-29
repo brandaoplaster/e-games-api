@@ -40,6 +40,7 @@ group :development, :test do
   gem "rubocop-rails", require: false
   gem "rubocop-rspec"
   gem "rufo"
+  gem "ruby-lsp"
 end
 
 group :development do
