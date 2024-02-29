@@ -134,6 +134,7 @@ build-iPhoneSimulator/
 
 # Local History for Visual Studio Code
 .history/
+.local
 
 # Built Visual Studio Code Extensions
 *.vsix
