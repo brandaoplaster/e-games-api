@@ -14,6 +14,7 @@ RUN apt-get update && \
   imagemagick \
   tzdata \
   curl \
+  nano \
   gnupg \
   git && \
   rm -rf /var/lib/apt/lists/*
