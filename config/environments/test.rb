@@ -59,5 +59,5 @@ Rails.application.configure do
   # config.action_view.annotate_rendered_view_with_filenames = true
 
   JUNO_AUTH_URL = "https://sandbox.boletobancario.com"
-  JUNO_API_URL = "https://sandbox.boletobancario.com/api-integration"
+  JUNO_RESOURCE_URL = "https://sandbox.boletobancario.com/api-integration"
 end
