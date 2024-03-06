@@ -1,4 +1,4 @@
-version: '3.7'
+version: "3.7"
 
 services:
   egames:
@@ -7,8 +7,12 @@ services:
       dockerfile: Dockerfile
     container_name: e_games_api
     command: bash start.sh
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
     depends_on:
       - egames_db
+      - redis
     ports:
       - 3000:3000
     volumes:
@@ -20,7 +24,7 @@ services:
       - e_games_api_net
 
   egames_db:
-    image: 'postgres:13'
+    image: "postgres:13"
     container_name: e_games_api_db
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -32,7 +36,31 @@ services:
     networks:
       - e_games_api_net
 
+  redis:
+    container_name: e_games_api_redis
+    image: "redis:latest"
+    command: redis-server
+    volumes:
+      - redis_data:/data
+    networks:
+      - e_games_api_net
+
+  sidekiq_egames_api:
+    depends_on:
+      - "redis"
+      - "egames"
+    build: .
+    command: bundle exec sidekiq
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+      - gem_cache:/usr/local/bundle
+    networks:
+      - e_games_api_net
+
 volumes:
+  redis_data:
   postgres_data:
   gem_cache:
 
