@@ -29,6 +29,14 @@ describe Juno::ChargeCreationService do
         order.reload
         expect(order.status).to eq "processing_error"
       end
+
+      it "send a generic error email" do
+        expect do
+          described_class.new(order).call
+        end.to have_enqueued_job(ActionMailer::MailDeliveryJob).with(
+          "CheckoutMailer", "generic_error", "deliver_now", { params: { order: order.clone.reload }, args: [] }
+        )
+      end
     end
 
     context "with valid valid charges" do
@@ -69,6 +77,15 @@ describe Juno::ChargeCreationService do
           order.reload
           expect(order.status).to eq "payment_denied"
         end
+
+        it "send a payment error email" do
+          expect do
+            described_class.new(order).call
+          end.to have_enqueued_job(ActionMailer::MailDeliveryJob).with(
+            "CheckoutMailer", "payment_error", "deliver_now", { params: { order: order.clone.reload },
+                                                                args: [payment_error.first["message"]] }
+          )
+        end
       end
 
       context "when credit card is restrict" do
@@ -96,6 +113,15 @@ describe Juno::ChargeCreationService do
           order.reload
           expect(order.status).to eq "payment_denied"
         end
+
+        it "send a payment error email" do
+          expect do
+            described_class.new(order).call
+          end.to have_enqueued_job(ActionMailer::MailDeliveryJob).with(
+            "CheckoutMailer", "payment_error", "deliver_now", { params: { order: order.clone.reload },
+                                                                args: [payment_error.first["message"]] }
+          )
+        end
       end
 
       context "when credit card is invalid" do
@@ -122,6 +148,15 @@ describe Juno::ChargeCreationService do
           described_class.new(order).call
           order.reload
           expect(order.status).to eq "payment_denied"
+        end
+
+        it "send a payment error email" do
+          expect do
+            described_class.new(order).call
+          end.to have_enqueued_job(ActionMailer::MailDeliveryJob).with(
+            "CheckoutMailer", "payment_error", "deliver_now", { params: { order: order.clone.reload },
+                                                                args: [payment_error.first["message"]] }
+          )
         end
       end
 
@@ -155,6 +190,15 @@ describe Juno::ChargeCreationService do
           order.reload
           expect(order.status).to eq "payment_denied"
         end
+
+        it "send a payment error email" do
+          expect do
+            described_class.new(order).call
+          end.to have_enqueued_job(ActionMailer::MailDeliveryJob).with(
+            "CheckoutMailer", "payment_error", "deliver_now", { params: { order: order.clone.reload },
+                                                                args: [payment_error.first["message"]] }
+          )
+        end
       end
 
       context "when credit card operation does not have any blocking" do
@@ -184,6 +228,14 @@ describe Juno::ChargeCreationService do
           order.reload
           expect(order.status).to eq "payment_accepted"
         end
+
+        it "send a success email" do
+          expect do
+            described_class.new(order).call
+          end.to have_enqueued_job(ActionMailer::MailDeliveryJob).with(
+            "CheckoutMailer", "success", "deliver_now", { params: { order: order.clone.reload }, args: [] }
+          )
+        end
       end
 
       context "when it is an order payed by billet" do
@@ -205,6 +257,14 @@ describe Juno::ChargeCreationService do
           described_class.new(order).call
           order.reload
           expect(order.status).to eq "waiting_payment"
+        end
+
+        it "send a success email" do
+          expect do
+            described_class.new(order).call
+          end.to have_enqueued_job(ActionMailer::MailDeliveryJob).with(
+            "CheckoutMailer", "success", "deliver_now", { params: { order: order.clone.reload }, args: [] }
+          )
         end
       end
     end
