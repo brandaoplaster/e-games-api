@@ -17,5 +17,14 @@ describe Admin::AllocateLicensesService do
       licenses_status = line_item.licenses.pluck(:status).uniq
       expect(licenses_status).to eq ["in_use"]
     end
+
+    it "send an email for each allocated license" do
+      described_class.new(line_item).call
+      line_item.licenses.each do |license|
+        expect(ActionMailer::MailDeliveryJob).to have_been_enqueued.with(
+          "LicenseMailer", "send_license", "deliver_now", { params: { license: license }, args: [] }
+        )
+      end
+    end
   end
 end
