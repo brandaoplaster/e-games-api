@@ -10,11 +10,10 @@ RSpec.describe LineItem, type: :model do
 
   it { is_expected.to belong_to(:order) }
   it { is_expected.to belong_to(:product) }
-  it { is_expected.to belong_to(:line_item).optional }
   it { is_expected.to have_many :licenses }
 
-  it "receives :waiting_order status as default on creating" do
-    subject = build(:line_item, status: nil)
+  it "receives :waiting_order status as default on creation" do
+    subject = create(:line_item, status: nil)
     expect(subject.status).to eq "waiting_order"
   end
 
@@ -24,5 +23,12 @@ RSpec.describe LineItem, type: :model do
     subject = build(:line_item, payed_price: payed_price, quantity: quantity)
     expect_value = payed_price * quantity
     expect(subject.total).to eq expect_value
+  end
+
+  it "#ship! must forward to :productable #ship! method" do
+    line_item = create(:line_item)
+    productable = line_item.product.productable
+    expect(productable).to receive(:ship!).with(line_item)
+    line_item.ship!
   end
 end
