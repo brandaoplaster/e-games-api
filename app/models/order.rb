@@ -26,6 +26,7 @@ class Order < ApplicationRecord
 
   before_validation :set_default_status, on: :create
   after_commit :enqueue_juno_charge_creation, on: :create
+  around_update :ship_order, if: -> { self.status_changed?(to: "payment_accepted") }
 
   with_options if: -> { credit_card? }, on: :create do
     validates :address, presence: true
@@ -41,6 +42,11 @@ class Order < ApplicationRecord
 
   def set_default_status
     self.status = :processing_order
+  end
+
+  def ship_order
+    yield
+    self.line_items.each { |line_item| line_item.ship! }
   end
 
   def enqueue_juno_charge_creation

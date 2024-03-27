@@ -11,4 +11,8 @@ class Game < ApplicationRecord
   validates :mode, :release_date, :developer, presence: true
 
   enum mode: { pvp: 1, pve: 2, both: 3 }
+
+  def ship!(line_item)
+    Admin::AllocateLicenseJob.perform_later(line_item)
+  end
 end
