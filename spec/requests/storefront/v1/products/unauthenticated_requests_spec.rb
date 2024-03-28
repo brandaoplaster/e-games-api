@@ -379,7 +379,15 @@ RSpec.describe "Storefront V1 Home", type: :request do
     it "returns right count this products was favorired" do
       create_list(:wish_item, 5, product: product)
       get url, headers: unauthenticated_header
-      expect(body_json['product']['favorited_count']).to eq 5
+      expect(body_json["product"]["favorited_count"]).to eq 5
+    end
+
+    it "returns right count this product was sold" do
+      order = create(:order)
+      order.update(status: :finished)
+      create_list(:line_item, 2, quantity: 3, product: product, order: order)
+      get url, headers: unauthenticated_header
+      expect(body_json["product"]["sells_count"]).to eq 6
     end
   end
 
@@ -401,7 +409,7 @@ RSpec.describe "Storefront V1 Home", type: :request do
     json.merge! product.productable.as_json(only: %i(mode release_date developer))
     json["system_requirement"] = product.productable.system_requirement.as_json
     json["favorited_count"] = product.wish_items.count
-    json["sells_count"] = 0
+    json['sells_count'] = product.sells_count
     json
   end
 end
