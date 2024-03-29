@@ -12,6 +12,7 @@ class User < ActiveRecord::Base
   include DeviseTokenAuth::Concerns::User
 
   has_many :wish_items, dependent: :destroy
+  has_many :orders
 
   validates :name, :profile, presence: true
   enum profile: { admin: 1, client: 0 }
