@@ -19,6 +19,9 @@ Rails.application.routes.draw do
       resources :games, only: [], shallow: true do
         resources :licenses
       end
+      namespace :dashboard do
+        resources :summaries, only: :index
+      end
     end
   end
 
