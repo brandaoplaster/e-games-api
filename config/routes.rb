@@ -21,6 +21,7 @@ Rails.application.routes.draw do
       end
       namespace :dashboard do
         resources :summaries, only: :index
+        resources :sales_ranges, only: :index
       end
     end
   end
